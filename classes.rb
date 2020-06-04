@@ -7,16 +7,15 @@ class Weather
   attr_reader :date, :sunrise, :sunset, :temp, :feels_like, :humidity, 
   :wind_speed, :wind_deg, :main, :description
 
-  def initialize(lat, lon)
-    data = get_data(lat, lon)
+  def initialize(lat, lon, appid)
+    data = get_data(lat, lon, appid)
     sort_data(data)
     process_data
   end
 
-  def get_data(lat, lon)
+  def get_data(lat, lon, appid)
     uri = URI.parse("https://api.openweathermap.org/data/2.5/onecall" + 
-      "?lat=#{lat}&lon=#{lon}&units=metric&exclude=hourly,daily" + 
-      "&appid=1c501cf2fe713fa399e0cd06c5258e4d")
+      "?lat=#{lat}&lon=#{lon}&units=metric&exclude=hourly,daily&appid=#{appid}")
     response = Net::HTTP.get_response(uri)
     response.body
   end
@@ -60,5 +59,35 @@ class Weather
                    when (293..337)
                       'северо-западный'
                    end
+    @main = case @main
+            when 'Thunderstorm'
+              'Гроза'
+            when 'Drizzle'
+              'Морось'
+            when 'Rain'
+              'Дождь'
+            when 'Snow'
+              'Снег'
+            when 'Clear'
+              'Ясно'
+            when 'Clouds'
+              'Облачно'
+            when 'Mist'
+              'Туман'
+            when 'Smoke'
+              'Дымка'
+            when 'Haze'
+              'Мгла'
+            when 'Dust'
+              'Пыль'
+            when 'Fog'
+              'Туман'
+            when 'Squall'
+              'Шквал'
+            when 'Ash'
+              'Пепел'
+            when 'Tornado'
+              'Торнадо'
+            end
   end
 end
